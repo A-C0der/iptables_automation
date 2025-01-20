@@ -1,0 +1,16 @@
+- name: Back Up IPtables 
+  hosts: servers
+  become: yes  # Use sudo for privilege escalation
+  tasks:
+    - name: Copy the Default rule to servers
+      copy:
+        src: /root/iptables_automation/rule/input
+        dest: /etc/sysconfig/input
+    
+    - name: Set Up Iptables
+      ansible.builtin.command:
+        cmd: mv /etc/sysconfig/input /etc/sysconfig/iptables -f 
+
+    - name: Reload iptables after set up the rules
+      become: true		
+      command: systemctl reload iptables

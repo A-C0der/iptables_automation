@@ -1,0 +1,64 @@
+- name: Back Up IPtables 
+  hosts: servers
+  become: yes  # Use sudo for privilege escalation
+  tasks:
+    - name: Check if iptables is installed
+      ansible.builtin.shell: rpm -q iptables
+      register: iptables_check
+      ignore_errors: yes
+
+    - name: Install iptables if not installed
+      ansible.builtin.yum:
+        name: 
+          - iptables
+        state: present
+      when: iptables_check.rc != 0
+
+    - name: Iptables service file install if centos 8 
+      command: yum install iptables-services -y
+
+    - name: Display iptables installation status
+      ansible.builtin.debug:
+        msg: >
+          {% if iptables_check.rc == 0 %}
+            iptables is already installed.
+          {% else %}
+            iptables was not installed and has now been installed.
+          {% endif %}
+
+    - name: Service IP Table eanble
+      command: systemctl enable iptables 
+
+    - name: Service IP table start
+      command: systemctl start iptables 
+      
+    - name: Create IP table directory
+      file:
+        path: /root/iptables_automation
+        state: directory
+        mode: '0755'
+
+    - name: Check if iptables service is running
+      command: systemctl is-active iptables
+      register: iptables_status
+      failed_when: false 
+      ignore_errors: true 
+
+
+    - name: Reload iptables if it is active
+      become: true		
+      command: systemctl reload iptables
+      when: iptables_status.stdout == "active"
+
+    - name: Log servers with iptables inactive
+      delegate_to: localhost
+      lineinfile:
+        path: /root/iptables_automation/iptables_inactive.log
+        line: "{{ inventory_hostname }} ({{ hostvars[inventory_hostname]['ansible_host'] }}): iptables is inactive"
+        create: yes  
+        insertbefore: EOF
+      when: iptables_status.stdout == "inactive"
+
+    - name: Backup command
+      ansible.builtin.command:
+        cmd: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
