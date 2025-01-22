@@ -59,6 +59,3 @@
         insertbefore: EOF
       when: iptables_status.stdout == "inactive"
 
-    - name: Backup command
-      ansible.builtin.command:
-        cmd: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK

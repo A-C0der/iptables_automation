@@ -1,0 +1,38 @@
+- name: Back Up IPtables 
+  hosts: servers
+  become: yes  # Use sudo for privilege escalation
+  tasks:
+    - name: Backup command
+      ansible.builtin.command:
+        cmd: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
+        
+    - name: Copy the Default rule to servers
+      copy:
+        src: /root/iptables_automation/rule/input_edit
+        dest: /etc/sysconfig/input_edit
+    
+    - name: Add New IP table rules
+      shell:  grep -Fxv -f /etc/sysconfig/input_edit /etc/sysconfig/iptables | sed -e "28r /etc/sysconfig/input_edit" > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
+
+    - name: Restart IP tables
+      shell: systemctl restart iptables
+      
+    - name: Check if iptables service is running
+      command: systemctl is-active iptables
+      register: iptables_status
+      failed_when: false 
+      ignore_errors: true 
+
+    - name: Reload iptables if it is active
+      become: true		
+      command: systemctl reload iptables
+      when: iptables_status.stdout == "active"
+
+    - name: Log servers with iptables inactive
+      delegate_to: localhost
+      lineinfile:
+        path: /root/iptables_automation/iptables_inactive.log
+        line: "{{ inventory_hostname }} ({{ hostvars[inventory_hostname]['ansible_host'] }}): iptables is inactive"
+        create: yes  
+        insertbefore: EOF
+      when: iptables_status.stdout == "inactive"

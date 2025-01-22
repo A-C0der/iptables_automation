@@ -2,6 +2,10 @@
   hosts: servers
   become: yes  # Use sudo for privilege escalation
   tasks:
+    - name: Backup command
+      ansible.builtin.command:
+        cmd: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
+        
     - name: Copy the Default rule to servers
       copy:
         src: /root/iptables_automation/rule/input
