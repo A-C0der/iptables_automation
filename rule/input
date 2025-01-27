@@ -1,2 +1,54 @@
-#hello6
-#hello2
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -s 10.120.8.21/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from GATEPRO app111" -j ACCEPT
+-A INPUT -s 10.120.8.250/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from GATEPRO app" -j ACCEPT
+-A INPUT -s 10.120.8.18/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NOCPRO app" -j ACCEPT
+-A INPUT -s 10.120.8.203/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NOCPRO app" -j ACCEPT
+-A INPUT -s 10.120.8.204/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NOCPRO app" -j ACCEPT
+-A INPUT -s 10.120.8.205/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NOCPRO app" -j ACCEPT
+-A INPUT -s 10.120.8.208/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from IIM agent" -j ACCEPT 
+-A INPUT -s 10.120.8.226/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NOCPRO app" -j ACCEPT
+-A INPUT -s 10.120.31.5/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from AOM" -j ACCEPT
+-A INPUT -s 10.120.31.7/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from AOM" -j ACCEPT
+-A INPUT -s 10.120.31.17/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from AOM" -j ACCEPT
+-A INPUT -s 10.120.31.26/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NIMS,backupcode" -j ACCEPT
+-A INPUT -s 10.120.31.29/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from NIMS,backupcode" -j ACCEPT
+-A INPUT -s 10.120.31.27/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from AAM agent" -j ACCEPT
+-A INPUT -s 10.120.31.28/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from AAM agent" -j ACCEPT
+-A INPUT -s 10.120.31.32/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from Solarwind" -j ACCEPT
+-A INPUT -s 10.78.18.133/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.78.18.134/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.78.18.135/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.78.18.136/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.78.18.137/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.78.18.138/32 -p udp -m state --state NEW -m udp -m multiport --dports 161,162 -m comment --comment "Connection from IPMS" -j ACCEPT
+-A INPUT -s 10.120.66.0/24 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from Office Unitel" -j ACCEPT
+-A INPUT -s 10.120.73.0/24 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from Office Unitel" -j ACCEPT
+-A INPUT -s 10.78.83.0/24 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from Office Unitel" -j ACCEPT
+-A INPUT -s 10.78.3.167/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from remote server" -j ACCEPT
+-A INPUT -s 10.78.3.168/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22,3306,1521,8000:10000 -m comment --comment "Connection from remote server" -j ACCEPT
+-A INPUT -s 10.120.33.90/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 0:65535 -m comment --comment "Connection from server SVP" -j ACCEPT
+-A INPUT -s 10.120.33.91/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 0:65535 -m comment --comment "Connection from server SVP" -j ACCEPT
+-A INPUT -s 10.120.33.92/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 0:65535 -m comment --comment "Connection from server SVP" -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type any -j ACCEPT 
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A INPUT -p udp -m udp --dport 33434:33535 -j ACCEPT 
+-A INPUT -j LOG --log-prefix "Dropped input by firewall: " 
+-A INPUT -j REJECT --reject-with icmp-host-prohibited 
+-A FORWARD -j LOG --log-prefix "Dropped forward by firewall: " 
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited 
+-A OUTPUT -d 10.120.8.162/32 -p udp -m state --state NEW -m udp -m multiport --dports 123 -m comment --comment "Connection to NTP Server" -j ACCEPT 
+-A OUTPUT -d 10.120.8.163/32 -p udp -m state --state NEW -m udp -m multiport --dports 123 -m comment --comment "Connection to NTP Server" -j ACCEPT 
+-A OUTPUT -d 10.120.33.73/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 80,443,4505,4506,6379 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
+-A OUTPUT -d 10.120.33.86/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 514,5044,6379,9092 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
+-A OUTPUT -d 10.120.33.86/32 -p udp -m state --state NEW -m udp -m multiport --dports 514 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT 
+-A OUTPUT -p icmp -m icmp --icmp-type any -j ACCEPT 
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A OUTPUT -p udp -m udp --dport 33434:33535 -j ACCEPT 
+-A OUTPUT -j LOG --log-prefix "Dropped output by firewall: " 
+-A OUTPUT -j REJECT --reject-with icmp-host-prohibited 
+COMMIT

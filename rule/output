@@ -1,0 +1,2 @@
+-A OUTPUT -d 192.221.129.191/32  -p tcp -m state --state NEW -m tcp -m multiport --dports 80,443,4505,4506,6379 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
+#oki sai
