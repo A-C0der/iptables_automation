@@ -1,10 +1,9 @@
 - name:  Iptables Input Rule
-  hosts: server2
-  become: yes  # Use sudo for privilege escalation
+  hosts: all  # Use sudo for privilege escalation
   tasks:
     - name: Backup command
-      ansible.builtin.command:
-        cmd: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
+
+      shell: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
         
     - name: Copy the Default rule to servers
       copy:
@@ -12,12 +11,13 @@
         dest: /etc/sysconfig/input_edit
     
     - name: Add New IP table rules
-      shell:  grep -Fxv -f /etc/sysconfig/input_edit /etc/sysconfig/iptables | sed -e "28r /etc/sysconfig/input_edit" > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
+      shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A INPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/input_edit") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/input_edit /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
+
 
     - name: Restart IP tables
-      shell: systemctl restart iptables
+      shell: sudo systemctl reload iptables
       
-    - name: Check if iptables service is running
+    - name: Check if iptables service is runningclea
       command: systemctl is-active iptables
       register: iptables_status
       failed_when: false 

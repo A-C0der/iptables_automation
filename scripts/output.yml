@@ -1,6 +1,5 @@
 - name: Iptable for output rule
   hosts: servers
-  become: yes  # Use sudo for privilege escalation
   tasks:
     - name: Backup command
       ansible.builtin.command:
@@ -12,14 +11,16 @@
         dest: /etc/sysconfig/output
     
     - name: Set Up Iptables
-      shell: grep -Fxv -f /etc/sysconfig/input_edit /etc/sysconfig/iptables | sed -e "$(($(wc -l < /etc/sysconfig/iptables) - 4))r /etc/sysconfig/output" /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables -f
-
+      shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A OUTPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/output") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/output /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
     - name: Create IP table directory
       file:
         path: /root/iptables_automation
         state: directory
         mode: '0755'
 
+    - name: Restart IP tables
+      shell: sudo systemctl reload iptables
+      
     - name: Check if iptables service is running
       command: systemctl is-active iptables
       register: iptables_status

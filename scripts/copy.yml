@@ -1,5 +1,5 @@
 - name: Back Up IPtables 
-  hosts: servers
+  hosts: all
   become: yes  # Use sudo for privilege escalation
   tasks:
     - name: Backup command
