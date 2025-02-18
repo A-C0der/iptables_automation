@@ -12,25 +12,22 @@
     
     - name: Set Up Iptables
       shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A OUTPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/output") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/output /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
-    - name: Create IP table directory
-      file:
-        path: /root/iptables_automation
-        state: directory
-        mode: '0755'
 
-    - name: Restart IP tables
-      shell: sudo systemctl reload iptables
-      
+    - name: start iptables 
+      command: sudo  systemctl start iptables
+    
+    - name: Reload iptables 
+      command: sudo  systemctl reload iptables
+
     - name: Check if iptables service is running
-      command: systemctl is-active iptables
+      command: sudo systemctl is-active iptables
       register: iptables_status
       failed_when: false 
       ignore_errors: true 
 
 
     - name: Reload iptables if it is active
-      become: true		
-      command: systemctl reload iptables
+      command: sudo systemctl reload iptables
       when: iptables_status.stdout == "active"
 
     - name: Log servers with iptables inactive

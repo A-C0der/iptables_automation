@@ -13,19 +13,20 @@
     - name: Add New IP table rules
       shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A INPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/input_edit") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/input_edit /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
 
+    - name: start IP tables
+      shell: sudo systemctl start iptables
 
     - name: Restart IP tables
       shell: sudo systemctl reload iptables
       
-    - name: Check if iptables service is runningclea
-      command: systemctl is-active iptables
+    - name: Check if iptables service is running
+      command: sudo systemctl is-active iptables
       register: iptables_status
       failed_when: false 
       ignore_errors: true 
 
-    - name: Reload iptables if it is active
-      become: true		
-      command: systemctl reload iptables
+    - name: Reload iptables if it is active	
+      command: sudo systemctl reload iptables
       when: iptables_status.stdout == "active"
 
     - name: Log servers with iptables inactive
