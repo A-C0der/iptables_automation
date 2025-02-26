@@ -1,22 +1,23 @@
 - name:  Iptables Input Rule
   hosts: all  # Use sudo for privilege escalation
   tasks:
-    - name: Backup command
-
+    - name: Backup Iptables
       shell: cp -r /etc/sysconfig/iptables /etc/sysconfig/iptables.BK
         
-    - name: Copy the Default rule to servers
+    - name: Copy Update rule to servers
       copy:
-        src: /root/iptables_automation/rule/input_edit
-        dest: /etc/sysconfig/input_edit
-    
+        src: /root/iptables_automation/rule/update_rule
+        dest: /etc/sysconfig/update_rule
+
+    - name: Upload the bash shell script for data analysis and edit
+      copy:
+        src: /root/iptables_automation/scripts/updates.sh
+        dest: /etc/sysconfig/updates.sh
+
     - name: Add New IP table rules
-      shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A INPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/input_edit") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/input_edit /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
+      shell: bash /etc/sysconfig/updates.sh
 
-    - name: start IP tables
-      shell: sudo systemctl start iptables
-
-    - name: Restart IP tables
+    - name: Reload IP tables
       shell: sudo systemctl reload iptables
       
     - name: Check if iptables service is running
@@ -28,6 +29,20 @@
     - name: Reload iptables if it is active	
       command: sudo systemctl reload iptables
       when: iptables_status.stdout == "active"
+
+    - name: Check for iptables cmd or software 
+      command: which iptables
+      register: iptables_check
+      ignore_errors: yes
+    
+    - name: Log for iptable checking 
+      delegate_to: localhost
+      lineinfile:
+        path: /root/iptables_automation/iptables.log
+        line: "({{ hostvars[inventory_hostname]['ansible_host'] }}): need to install iptables"
+        create: yes
+        insertbefore: EOF
+      when: iptables_check.rc != 0
 
     - name: Log servers with iptables inactive
       delegate_to: localhost

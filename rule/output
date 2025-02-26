@@ -1,2 +1,4 @@
--A OUTPUT -d 192.21.229.191/32  -p tcp -m state --state NEW -m tcp -m multiport --dports 80,443,4505,4506,6379 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
-#oki mr tonyနိိ
+#output rule
+-A OUTPUT -d 192.168.229.191/32  -p tcp -m state --state NEW -m tcp -m multiport --dports 80,443,4505,4506,6379 -m comment --comment "Connect to ServerEndpoint" -j ACCEPT
+-A OUTPUT -d 10.126.55.162/32 -p udp -m state --state NEW -m udp -m multiport --dports 123 -m comment --comment "Connection to NTP Server" -j ACCEPT 
+-A OUTPUT -d 10.139.18.163/32 -p udp -m state --state NEW -m udp -m multiport --dports 123 -m comment --comment "Connection to NTP Server" -j ACCEPT 
