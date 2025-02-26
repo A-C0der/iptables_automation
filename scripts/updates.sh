@@ -12,21 +12,27 @@ while IFS= read -r new_rule new_rule2; do
     INPUT_LOG="-A INPUT -j LOG --log-prefix"
     OUTPUT_LOG="-A OUTPUT -j LOG --log-prefix"
 
-    # Extract Ports
+    # Extract Ports from the new rule
     NEW_PORTS=$(echo "$new_rule" | sed -n 's/.*--dports \([^ ]*\).*/\1/p')
-    NEW_NON_COLON_PORTS=$(echo "$NEW_PORTS" | sed 's/\:[^,]*//g' | tr ',' '\n' | sort -u | tr '\n' ',' | sed 's/,$//')
 
     # Search for existing rules
     EXISTING_RULE=$(grep -E "\-A $DIRECTION -s $IP" "$DEST")
     EXISTING_RULE2=$(grep -E "\-A $DIRECTION -d $IP2" "$DEST")
 
-    
+    echo "DEBUG: Processing rule: $new_rule"
+    echo "DEBUG: IP (-s)=$IP, IP2 (-d)=$IP2"
+    echo "DEBUG: Existing Rule (-s)=$EXISTING_RULE"
+    echo "DEBUG: Existing Rule (-d)=$EXISTING_RULE2"
+
+    # Function to merge ports without duplicates
+    merge_ports() {
+        echo "$1,$2" | tr ',' '\n' | sort -u | tr '\n' ',' | sed 's/,$//'
+    }
 
     if [[ -n "$IP" && -n "$EXISTING_RULE" ]]; then
         echo "Updating existing source rule for IP: $IP"
         EXISTING_PORTS=$(echo "$EXISTING_RULE" | sed -n 's/.*--dports \([^ ]*\).*/\1/p')
-        FINAL_PORTS="$NEW_NON_COLON_PORTS,$EXISTING_PORTS"
-        FINAL_PORTS=$(echo "$FINAL_PORTS" | sed 's/^,//' | sed 's/,$//')
+        FINAL_PORTS=$(merge_ports "$EXISTING_PORTS" "$NEW_PORTS")
 
         UPDATED_RULE=$(echo "$EXISTING_RULE" | sed "s/--dports [^ ]*/--dports $FINAL_PORTS/")
         echo "DEBUG: Updating $DEST with: $UPDATED_RULE"
@@ -36,8 +42,7 @@ while IFS= read -r new_rule new_rule2; do
     elif [[ -n "$IP2" && -n "$EXISTING_RULE2" ]]; then
         echo "Updating existing destination rule for IP2: $IP2"
         EXISTING_PORTS=$(echo "$EXISTING_RULE2" | sed -n 's/.*--dports \([^ ]*\).*/\1/p')
-        FINAL_PORTS="$NEW_NON_COLON_PORTS,$EXISTING_PORTS"
-        FINAL_PORTS=$(echo "$FINAL_PORTS" | sed 's/^,//' | sed 's/,$//')
+        FINAL_PORTS=$(merge_ports "$EXISTING_PORTS" "$NEW_PORTS")
 
         UPDATED_RULE2=$(echo "$EXISTING_RULE2" | sed "s/--dports [^ ]*/--dports $FINAL_PORTS/")
         echo "DEBUG: Updating $DEST with: $UPDATED_RULE2"

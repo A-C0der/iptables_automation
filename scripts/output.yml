@@ -13,8 +13,6 @@
     - name: Set Up Iptables
       shell: awk 'FNR==NR {exclude[$0]; next} {  if ($0 ~ /-A OUTPUT -j LOG --log-prefix/) { while ((getline line < "/etc/sysconfig/output") > 0) print line; }  if (!($0 in exclude)) print; }' /etc/sysconfig/output /etc/sysconfig/iptables > /etc/sysconfig/temp && mv /etc/sysconfig/temp /etc/sysconfig/iptables
 
-    - name: start iptables 
-      command: sudo  systemctl start iptables
     
     - name: Reload iptables 
       command: sudo  systemctl reload iptables

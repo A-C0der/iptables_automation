@@ -1,4 +1,4 @@
 #tony
 -A INPUT -s 192.168.155.70/14 -j ACCEPT
--A INPUT -s 10.192.232.194/23 -p tcp -m state --state NEW -m tcp -m multiport --dports 22 -m comment --comment "Connection from NOCPRO app1" -j ACCEPT
+-A INPUT -s 10.192.232.194/23 -p tcp -m state --state NEW -m tcp -m multiport --dports 55,33,22 -m comment --comment "Connection from NOCPRO app1" -j ACCEPT
 -A INPUT -s 10.196.232.168/32 -p tcp -m state --state NEW -m tcp -m multiport --dports 22 -m comment --comment "Connection from NOCPRO app1" -j ACCEPT
