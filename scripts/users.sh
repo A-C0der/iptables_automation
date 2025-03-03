@@ -45,8 +45,8 @@ echo "$username  ALL=(ALL) NOPASSWD: /bin/systemctl status iptables" | sudo tee 
 echo "$username  ALL=(ALL) NOPASSWD: /usr/bin/systemctl  status  iptables" | sudo tee -a /etc/sudoers.d/$username > /dev/null
 echo "$username  ALL=(ALL) NOPASSWD:  /bin/systemctl is-active iptables"| sudo tee -a /etc/sudoers.d/$username > /dev/null
 echo "$username  ALL=(ALL) NOPASSWD:  /usr/bin/systemctl is-active iptables"| sudo tee -a /etc/sudoers.d/$username > /dev/null
-
-
+echo "$username  ALL=(ALL) NOPASSWD:  /usr/bin/systemctl is-inactive iptables"| sudo tee -a /etc/sudoers.d/$username > /dev/null
+echo "$username  ALL=(ALL) NOPASSWD: /bin/systemctl is-inactive iptables" | sudo tee -a /etc/sudoers.d/$username > /dev/null
 
 echo "$username  ALL=(ALL) NOPASSWD: /usr/bin/systemctl  start  iptables" | sudo tee -a /etc/sudoers > /dev/null
 echo "$username  ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload iptables" | sudo tee -a /etc/sudoers > /dev/null
@@ -58,4 +58,5 @@ echo "$username  ALL=(ALL) NOPASSWD: /bin/systemctl status iptables" | sudo tee 
 echo "$username  ALL=(ALL) NOPASSWD: /usr/bin/systemctl  status  iptables" | sudo tee -a /etc/sudoers > /dev/null
 echo "$username  ALL=(ALL) NOPASSWD:  /bin/systemctl is-active iptables"| sudo tee -a /etc/sudoers > /dev/null
 echo "$username  ALL=(ALL) NOPASSWD:  /usr/bin/systemctl is-active iptables"| sudo tee -a /etc/sudoers > /dev/null
-
+echo "$username  ALL=(ALL) NOPASSWD:  /bin/systemctl is-inactive iptables"| sudo tee -a /etc/sudoers > /dev/null
+echo "$username  ALL=(ALL) NOPASSWD:  /usr/bin/systemctl is-inactive iptables"| sudo tee -a /etc/sudoers > /dev/null
