@@ -2,6 +2,8 @@ Run Command For first set Up New IP Tables
 1. #inventory.ini is used to add ssh details
 2. main.yml uses for Back Up, IP Tables checking and debuging
 
+Users.sh is used to create ansible user that allows to update the iptable rule.
+
 copy.yml uses for set up iptables with default rule.
 /rule/input file can use for default IP Rule 
 
